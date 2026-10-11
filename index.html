@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inecuaciones: aprendé, practicá y evaluate</title>
+<meta name="description" content="Inecuaciones con una y dos incógnitas y propiedad distributiva: explicaciones, ejercicios que cambian y evaluaciones con nota.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📐</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1d2559; --soft:#5b6390; --grid:#dcecf9;
+  --yellow:#fff35c; --pink:#ff5fa2; --cyan:#2bd0ff; --green:#3ee08a;
+  --violet:#6c4cff; --orange:#ff9a3c; --red:#e5304f;
+  --ok:#11b97a; --bad:#f0365e;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; font:400 17px/1.65 'Nunito',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif; color:var(--ink);
+  background:#fff;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;
+}
+.wrap{max-width:940px;margin:0 auto;padding:0 18px}
+h1,h2,h3,h4{font-family:'Baloo 2','Nunito',system-ui,sans-serif;line-height:1.15}
+
+/* ---------- Encabezado tipo cuaderno ---------- */
+header{padding:34px 0 0}
+.title{font-weight:800;font-size:clamp(2.7rem,10vw,5.2rem);margin:0;line-height:1}
+.title span{background:linear-gradient(transparent 52%,var(--yellow) 52%,var(--yellow) 90%,transparent 90%);padding:0 .12em}
+.symbols{font:800 clamp(1.4rem,4vw,2rem) 'Baloo 2',sans-serif;margin:6px 0 0;display:flex;gap:14px}
+.symbols i{font-style:normal;width:1.6em;height:1.6em;display:grid;place-items:center;border:3px solid var(--ink);border-radius:10px;transform:rotate(-4deg)}
+.symbols i:nth-child(1){background:var(--yellow)}
+.symbols i:nth-child(2){background:#ffc6de;transform:rotate(3deg)}
+.symbols i:nth-child(3){background:#c6f1ff;transform:rotate(-2deg)}
+.symbols i:nth-child(4){background:#c8f7dc;transform:rotate(5deg)}
+.sub{font-size:1.1rem;color:var(--soft);font-weight:700;margin:16px 0 22px;max-width:560px}
+
+.tabs{display:flex;gap:6px;align-items:flex-end;border-bottom:4px solid var(--ink);overflow-x:auto;padding-top:8px}
+.tab{font:800 1.12rem 'Baloo 2',sans-serif;border:3px solid var(--ink);border-bottom:0;border-radius:14px 14px 0 0;
+  padding:9px 20px 5px;cursor:pointer;color:var(--ink);transform:translateY(7px);transition:transform .15s;white-space:nowrap}
+.tab[data-tab=aprender]{background:#c6f1ff}
+.tab[data-tab=practicar]{background:#fff6a6}
+.tab[data-tab=evaluate]{background:#ffc6de}
+.tab:hover{transform:translateY(3px)}
+.tab.on{transform:none;padding-bottom:12px}
+
+main.wrap{padding-top:28px;padding-bottom:70px}
+.panel{display:none}
+.panel.on{display:block}
+
+/* ---------- Hojas ---------- */
+.sheet{background:#fff;border:3px solid var(--ink);border-radius:8px;padding:22px 24px;margin:0 0 24px;box-shadow:6px 6px 0 var(--ink)}
+.sheet h3{font-size:1.5rem;margin:0 0 8px}
+.sheet p{margin:8px 0}
+.lvl-title{font-size:2rem;margin:46px 0 18px;display:flex;align-items:center;gap:12px}
+.lvl-title:first-of-type{margin-top:8px}
+.lvl-title .dot{width:24px;height:24px;border-radius:50%;border:3px solid var(--ink);flex:none}
+.levelnav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+
+.m{font-family:'Baloo 2',sans-serif;font-weight:700;white-space:nowrap}
+.eq{display:block;font:700 1.3rem 'Baloo 2',sans-serif;padding:5px 12px;margin:6px 0;background:#f3f7ff;border-left:4px solid var(--cyan);border-radius:4px;overflow-x:auto;white-space:nowrap}
+.note{background:var(--yellow);padding:12px 16px;margin:14px 0;transform:rotate(-.6deg);box-shadow:3px 5px 0 rgba(29,37,89,.15);border-radius:2px}
+.note.pink{background:#ffc6de;transform:rotate(.5deg)}
+.note.cyan{background:#c6f1ff;transform:rotate(-.3deg)}
+.note.green{background:#c8f7dc;transform:rotate(.4deg)}
+.ok-t{color:var(--ok);font-weight:800}
+.bad-t{color:var(--bad);font-weight:800}
+
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;margin:10px 0;min-width:340px}
+th,td{border:2px solid var(--ink);padding:7px 10px;text-align:left}
+th{background:#f3f7ff;font-family:'Baloo 2',sans-serif}
+td.big-s{font:800 1.5rem 'Baloo 2',sans-serif;text-align:center;width:70px}
+
+.steps{list-style:none;counter-reset:s;padding:0;margin:12px 0}
+.steps>li{counter-increment:s;position:relative;padding:3px 0 10px 44px}
+.steps>li::before{content:counter(s);position:absolute;left:0;top:3px;width:30px;height:30px;border-radius:50%;
+  background:var(--violet);color:#fff;font:800 1rem/30px 'Baloo 2',sans-serif;text-align:center}
+
+.btn{font:800 1.05rem 'Baloo 2',sans-serif;border:3px solid var(--ink);border-radius:12px;padding:8px 18px;background:var(--violet);
+  color:#fff;cursor:pointer;box-shadow:0 5px 0 var(--ink);transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+.btn.y{background:var(--yellow);color:var(--ink)}
+.btn.w{background:#fff;color:var(--ink)}
+.btn.p{background:var(--pink)}
+.btn.g{background:var(--green);color:var(--ink)}
+.btn.sm{font-size:.95rem;padding:5px 12px;box-shadow:0 3px 0 var(--ink)}
+:focus-visible{outline:3px solid var(--pink);outline-offset:3px}
+
+.demo{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:12px 0;font-weight:700}
+.demo select,.demo input[type=number]{font:700 1.15rem 'Baloo 2',sans-serif;border:2.5px solid var(--ink);border-radius:8px;padding:2px 8px;width:72px;background:#fff;color:var(--ink)}
+.demo input[type=range]{width:200px;accent-color:var(--pink)}
+.graph svg{display:block;width:100%;max-width:560px;height:auto;margin:10px auto}
+.graph svg.pl{max-width:330px;border:2px solid var(--ink);border-radius:6px;background:#fff}
+
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.15}
+.frac>span:first-child{border-bottom:3px solid currentColor;padding:0 4px}
+.sys{display:inline-flex;flex-direction:column;border-left:3px solid currentColor;border-radius:12px 0 0 12px;padding-left:12px;text-align:left;gap:2px;vertical-align:middle}
+
+/* ---------- Práctica ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.chip{font:800 .98rem 'Nunito',sans-serif;border:2.5px solid var(--ink);background:#fff;border-radius:999px;padding:6px 14px;cursor:pointer;color:var(--ink)}
+.chip.on{background:var(--ink);color:#fff}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.stat{border:3px solid var(--ink);border-radius:10px;padding:8px;text-align:center}
+.stat:nth-child(1){background:#fff6a6}.stat:nth-child(2){background:#ffc6de}.stat:nth-child(3){background:#c6f1ff}.stat:nth-child(4){background:#c8f7dc}
+.stat b{display:block;font:800 1.8rem/1.1 'Baloo 2',sans-serif}
+.stat span{font-size:.85rem;color:var(--soft);font-weight:800}
+.stat.pop b{animation:pop .4s}
+@keyframes pop{50%{transform:scale(1.35)}}
+
+.q-meta{display:flex;gap:10px;align-items:center;font-weight:800;color:var(--soft);margin-bottom:4px;flex-wrap:wrap}
+.lvl{font:800 .8rem 'Nunito',sans-serif;padding:1px 10px;border-radius:999px;border:2px solid var(--ink);color:var(--ink)}
+.lvl-basico{background:var(--green)}
+.lvl-medio{background:var(--orange)}
+.lvl-avanzado{background:var(--pink);color:#fff}
+.q-prompt{font-size:1.12rem;font-weight:700;margin:6px 0}
+.big{font:800 clamp(1.45rem,5vw,2.2rem) 'Baloo 2',sans-serif;text-align:center;padding:16px 10px;margin:10px 0 16px;
+  background:#f3f7ff;border:2px dashed #9fb3e6;border-radius:12px;overflow-x:auto;white-space:nowrap}
+.ans{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin:10px 0 18px}
+.ans-var{font:800 2rem 'Baloo 2',sans-serif}
+.ans select,.ans input{font:800 1.5rem 'Baloo 2',sans-serif;border:3px solid var(--ink);border-radius:10px;padding:2px 10px;background:#fff;color:var(--ink);height:54px}
+.ans input{width:120px;text-align:center}
+.pm{font:800 1.4rem 'Baloo 2',sans-serif;width:48px;height:54px;border:3px solid var(--ink);border-radius:10px;background:#fff6a6;cursor:pointer;color:var(--ink)}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0 18px}
+.opt{font:800 1.25rem 'Baloo 2',sans-serif;border:3px solid var(--ink);border-radius:12px;padding:8px;background:#fff;cursor:pointer;color:var(--ink)}
+.opt.sel{background:#e4ddff;box-shadow:inset 0 0 0 3px var(--violet)}
+.opt.right{background:#c8f7dc}
+.opt.wrong{background:#ffd0da;text-decoration:line-through}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.hintbox{margin-top:14px}
+.fb{margin-top:18px;border:3px solid var(--ink);border-radius:12px;padding:14px 18px}
+.fb.ok{background:#e3fbee}
+.fb.bad{background:#fff0f3}
+.fb h4{margin:0 0 6px;font-size:1.35rem}
+details summary{cursor:pointer;font-weight:800;color:var(--violet);margin:6px 0}
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* ---------- Evaluate ---------- */
+.ev-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.ev-card{border:3px solid var(--ink);border-radius:10px;padding:18px;box-shadow:6px 6px 0 var(--ink);display:flex;flex-direction:column;gap:6px}
+.ev-card:nth-child(1){background:#c8f7dc}.ev-card:nth-child(2){background:#fff6a6}.ev-card:nth-child(3){background:#ffc6de}
+.ev-card h3{margin:0;font-size:1.6rem}
+.ev-card p{margin:0 0 8px;flex:1}
+.ev-bar{position:sticky;top:8px;z-index:5;background:#fff;border:3px solid var(--ink);border-radius:12px;padding:10px 14px;
+  display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:20px;box-shadow:0 4px 0 var(--ink);font-weight:800}
+.prog{flex:1;min-width:120px;height:16px;border:2.5px solid var(--ink);border-radius:99px;overflow:hidden;background:#fff}
+.prog i{display:block;height:100%;background:var(--green);width:0;transition:width .3s}
+.evq{display:grid;grid-template-columns:44px 1fr;gap:12px}
+.evq-n{width:42px;height:42px;border-radius:50%;background:var(--yellow);border:3px solid var(--ink);font:800 1.2rem/36px 'Baloo 2',sans-serif;text-align:center}
+.evq.right .evq-n{background:var(--green)}
+.evq.wrong .evq-n{background:var(--pink);color:#fff}
+.evq-body{min-width:0}
+.result{text-align:center}
+.grade{font:800 4.6rem/1 'Baloo 2',sans-serif;color:var(--red);display:inline-grid;place-items:center;width:150px;height:150px;
+  border:5px solid var(--red);border-radius:50%;transform:rotate(-8deg);margin:6px 0 10px;background:#fff}
+.grade small{display:block;font-size:1rem;margin-top:-18px}
+.breakdown{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0}
+.bd{border:2.5px solid var(--ink);border-radius:10px;padding:4px 12px;font-weight:800;background:#fff}
+.bd.mal{background:#ffd0da}
+.hist{list-style:none;padding:0;margin:0}
+.hist li{border-bottom:2px dashed #c9d3ee;padding:6px 0;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;
+  font-weight:800;opacity:0;pointer-events:none;transition:opacity .2s;z-index:50;max-width:90vw;text-align:center}
+.toast.on{opacity:1}
+.cf{position:fixed;top:-14px;width:10px;height:14px;z-index:60;animation:fall linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+footer{text-align:center;color:var(--soft);font-weight:700;padding:10px 20px 30px}
+
+@media (max-width:560px){
+  body{font-size:16px}
+  .sheet{padding:18px 15px;box-shadow:4px 4px 0 var(--ink)}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .tab{padding:8px 14px 4px;font-size:1rem}
+  .evq{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <h1 class="title"><span>Inecuaciones</span></h1>
+  <div class="symbols" aria-hidden="true"><i>&lt;</i><i>&gt;</i><i>≤</i><i>≥</i></div>
+  <p class="sub">Aprendé paso a paso, practicá con ejercicios que siempre cambian y tomate una prueba con nota.</p>
+  <nav class="tabs" role="tablist">
+    <button class="tab on" data-tab="aprender" role="tab">📘 Aprender</button>
+    <button class="tab" data-tab="practicar" role="tab">✏️ Practicar</button>
+    <button class="tab" data-tab="evaluate" role="tab">📝 Evaluate</button>
+  </nav>
+</header>
+
+<main class="wrap">
+
+<!-- ===================== APRENDER ===================== -->
+<section class="panel on" id="aprender">
+
+  <div class="levelnav">
+    <a class="btn g sm" href="#nivel-basico">🌱 Básico</a>
+    <a class="btn y sm" href="#nivel-medio">🔥 Medio</a>
+    <a class="btn p sm" href="#nivel-avanzado">🚀 Avanzado</a>
+  </div>
+
+  <!-- ---------- BÁSICO ---------- -->
+  <h2 class="lvl-title" id="nivel-basico"><span class="dot" style="background:var(--green)"></span>Nivel básico</h2>
+
+  <article class="sheet">
+    <h3>¿Qué es una inecuación?</h3>
+    <p>Es como una ecuación, pero en vez del <b>=</b> tiene un signo de <b>mayor</b> o <b>menor</b>.</p>
+    <span class="eq">Ecuación: x + 2 = 5 &nbsp;→&nbsp; una sola respuesta: x = 3</span>
+    <span class="eq">Inecuación: x + 2 &gt; 5 &nbsp;→&nbsp; muchas respuestas</span>
+    <p>¿Qué números + 2 dan <b>más</b> que 5?</p>
+    <p><span class="ok-t">4 ✔</span> (da 6) &nbsp; <span class="ok-t">10 ✔</span> &nbsp; <span class="ok-t">3,5 ✔</span> &nbsp; <span class="bad-t">3 ✘</span> (da 5, y 5 no es más que 5)</p>
+    <div class="note">La solución es <span class="m">x &gt; 3</span>: <b>todos</b> los números mayores que 3.</div>
+  </article>
+
+  <article class="sheet">
+    <h3>Los 4 símbolos</h3>
+    <div class="tablewrap"><table>
+      <tr><th>Símbolo</th><th>Se lee</th><th>Ejemplo</th></tr>
+      <tr><td class="big-s">&lt;</td><td>menor que</td><td><span class="m">2 &lt; 7</span></td></tr>
+      <tr><td class="big-s">&gt;</td><td>mayor que</td><td><span class="m">9 &gt; 4</span></td></tr>
+      <tr><td class="big-s">≤</td><td>menor <b>o igual</b></td><td><span class="m">x ≤ 5</span> (el 5 también vale)</td></tr>
+      <tr><td class="big-s">≥</td><td>mayor <b>o igual</b></td><td><span class="m">x ≥ 5</span> (el 5 también vale)</td></tr>
+    </table></div>
+    <div class="note pink">🐊 Truco: el lado abierto es una boca que siempre se come al número <b>más grande</b>: <span class="m">2 &lt; 7</span>.</div>
+  </article>
+
+  <article class="sheet">
+    <h3>Dibujar la solución en la recta</h3>
+    <p>○ <b>Círculo vacío</b> con &lt; o &gt; (el número <b>no</b> entra).<br>● <b>Círculo lleno</b> con ≤ o ≥ (el número <b>sí</b> entra).</p>
+    <p>Menor → flecha a la <b>izquierda</b>. Mayor → flecha a la <b>derecha</b>.</p>
+    <div class="demo">
+      <span>Probá: x</span>
+      <select id="dlOp" aria-label="Símbolo"><option value="<">&lt;</option><option value="≤">≤</option><option value=">">&gt;</option><option value="≥" selected>≥</option></select>
+      <input type="range" id="dlV" min="-9" max="9" value="2" aria-label="Número">
+      <b id="dlVal" class="m">2</b>
+    </div>
+    <div class="graph" id="dlOut"></div>
+    <p id="dlTxt" style="text-align:center"></p>
+  </article>
+
+  <article class="sheet">
+    <h3>Escribirla como intervalo</h3>
+    <div class="tablewrap"><table>
+      <tr><th>Inecuación</th><th>Intervalo</th><th>¿El 3 entra?</th></tr>
+      <tr><td class="m">x &lt; 3</td><td class="m">(-∞ ; 3)</td><td>No</td></tr>
+      <tr><td class="m">x ≤ 3</td><td class="m">(-∞ ; 3]</td><td>Sí</td></tr>
+      <tr><td class="m">x &gt; 3</td><td class="m">(3 ; +∞)</td><td>No</td></tr>
+      <tr><td class="m">x ≥ 3</td><td class="m">[3 ; +∞)</td><td>Sí</td></tr>
+    </table></div>
+    <div class="note cyan"><b>( )</b> paréntesis = no entra. &nbsp; <b>[ ]</b> corchete = sí entra.<br>El <b>∞</b> siempre va con paréntesis.</div>
+  </article>
+
+  <article class="sheet">
+    <h3>Resolver: igual que una ecuación</h3>
+    <p>Pasás los términos al otro lado con la operación contraria: <b>+ ↔ −</b> y <b>· ↔ :</b></p>
+    <span class="eq">3x - 4 &lt; 11</span>
+    <ol class="steps">
+      <li>El -4 está restando, pasa <b>sumando</b>.<span class="eq">3x &lt; 11 + 4 &nbsp;→&nbsp; 3x &lt; 15</span></li>
+      <li>El 3 está multiplicando, pasa <b>dividiendo</b>.<span class="eq">x &lt; 15 : 3 &nbsp;→&nbsp; x &lt; 5</span></li>
+      <li>Comprobá con un número de la solución, por ejemplo 0:<span class="eq">3·0 - 4 = -4 &nbsp; y &nbsp; -4 &lt; 11 ✔</span></li>
+    </ol>
+    <button class="btn g go" data-go="basico">Practicar nivel básico</button>
+  </article>
+
+  <!-- ---------- MEDIO ---------- -->
+  <h2 class="lvl-title" id="nivel-medio"><span class="dot" style="background:var(--orange)"></span>Nivel medio</h2>
+
+  <article class="sheet">
+    <h3>⚠️ La regla de oro</h3>
+    <div class="note pink" style="font-size:1.15rem">Si <b>multiplicás o dividís</b> por un número <b>negativo</b>, el signo <b>se da vuelta</b>.<br>
+      <span class="m">&lt; → &gt;</span> &nbsp; <span class="m">&gt; → &lt;</span> &nbsp; <span class="m">≤ → ≥</span> &nbsp; <span class="m">≥ → ≤</span></div>
+    <p><b>¿Por qué?</b> <span class="m">2 &lt; 5</span> es verdad. Multiplicando por -1 quedan -2 y -5… ¡y -2 es <b>mayor</b> que -5! Por eso: <span class="m">-2 &gt; -5</span>.</p>
+    <span class="eq">-2x + 3 ≥ 11</span>
+    <ol class="steps">
+      <li>El +3 pasa restando.<span class="eq">-2x ≥ 11 - 3 &nbsp;→&nbsp; -2x ≥ 8</span></li>
+      <li>El -2 pasa dividiendo. <b>Es negativo: ≥ se da vuelta y queda ≤</b>.<span class="eq">x ≤ 8 : (-2) &nbsp;→&nbsp; x ≤ -4</span></li>
+    </ol>
+    <div class="note cyan">Sumar o restar <b>nunca</b> da vuelta el signo.<br>Y si dividís por un <b>positivo</b>, tampoco, aunque el resultado dé negativo: <span class="m">2x &lt; -6 → x &lt; -3</span></div>
+    <button class="btn y go" data-go="negativo">Practicar el signo negativo</button>
+  </article>
+
+  <article class="sheet">
+    <h3>Cuando hay x de los dos lados</h3>
+    <p>Juntás las <b>x</b> de un lado y los <b>números</b> del otro.</p>
+    <span class="eq">5x - 3 &gt; 2x + 9</span>
+    <ol class="steps">
+      <li>El 2x pasa restando a la izquierda.<span class="eq">5x - 2x - 3 &gt; 9 &nbsp;→&nbsp; 3x - 3 &gt; 9</span></li>
+      <li>El -3 pasa sumando.<span class="eq">3x &gt; 12</span></li>
+      <li>El 3 pasa dividiendo (positivo, no cambia).<span class="eq">x &gt; 4</span></li>
+    </ol>
+    <div class="note">💡 Juntá las x del lado donde queden <b>positivas</b>: así no tenés que dar vuelta el signo.</div>
+    <button class="btn y go" data-go="ambos">Practicar x en ambos lados</button>
+  </article>
+
+  <article class="sheet">
+    <h3>Propiedad distributiva</h3>
+    <p>El número de afuera <b>multiplica a cada término</b> de adentro del paréntesis.</p>
+    <span class="eq">a · (b + c) = a·b + a·c</span>
+    <span class="eq">3(x - 2) = 3·x + 3·(-2) = 3x - 6</span>
+    <div class="tablewrap"><table style="max-width:420px">
+      <tr><th colspan="2">Regla de los signos</th></tr>
+      <tr><td class="m">+ · + = +</td><td class="m">- · - = +</td></tr>
+      <tr><td class="m">+ · - = -</td><td class="m">- · + = -</td></tr>
+    </table></div>
+    <span class="eq">3(x - 2) ≤ 9</span>
+    <ol class="steps">
+      <li>Distribuimos el 3.<span class="eq">3x - 6 ≤ 9</span></li>
+      <li>El -6 pasa sumando.<span class="eq">3x ≤ 15</span></li>
+      <li>El 3 pasa dividiendo.<span class="eq">x ≤ 5</span></li>
+    </ol>
+    <div class="note pink">❌ Error típico: <span class="m">3(x - 2) = 3x - 2</span>. ¡El 3 también multiplica al 2!<br>✔ Correcto: <span class="m">3x - 6</span></div>
+    <p>Con número negativo afuera:</p>
+    <span class="eq">-2(x + 4) &lt; 6 &nbsp;→&nbsp; -2x - 8 &lt; 6 &nbsp;→&nbsp; -2x &lt; 14 &nbsp;→&nbsp; x &gt; -7</span>
+    <p>(Al dividir por -2, el &lt; se dio vuelta.)</p>
+    <button class="btn y go" data-go="dist">Practicar distributiva</button>
+  </article>
+
+  <!-- ---------- AVANZADO ---------- -->
+  <h2 class="lvl-title" id="nivel-avanzado"><span class="dot" style="background:var(--pink)"></span>Nivel avanzado</h2>
+
+  <article class="sheet">
+    <h3>Un menos adelante del paréntesis</h3>
+    <p>El número que distribuís lleva <b>su signo</b>. En <span class="m">- 2(x - 3)</span> distribuís <b>-2</b>.</p>
+    <span class="eq">4(x + 1) - 2(x - 3) &gt; 20</span>
+    <ol class="steps">
+      <li>Distribuimos los dos paréntesis.<span class="eq">4x + 4 - 2x + 6 &gt; 20</span></li>
+      <li>Juntamos x con x y números con números.<span class="eq">2x + 10 &gt; 20</span></li>
+      <li>El 10 pasa restando.<span class="eq">2x &gt; 10</span></li>
+      <li>El 2 pasa dividiendo.<span class="eq">x &gt; 5</span></li>
+    </ol>
+    <div class="note pink">❌ <span class="m">-2(x - 3) = -2x - 6</span> &nbsp; ✔ <span class="m">-2(x - 3) = -2x + 6</span><br>(menos por menos da <b>más</b>)</div>
+  </article>
+
+  <article class="sheet">
+    <h3>Paréntesis de los dos lados</h3>
+    <span class="eq">2(x + 3) &lt; 5(x - 3)</span>
+    <ol class="steps">
+      <li>Distribuimos de cada lado.<span class="eq">2x + 6 &lt; 5x - 15</span></li>
+      <li>Las x a la izquierda, los números a la derecha.<span class="eq">2x - 5x &lt; -15 - 6 &nbsp;→&nbsp; -3x &lt; -21</span></li>
+      <li>Dividimos por -3: <b>se da vuelta</b>.<span class="eq">x &gt; 7</span></li>
+    </ol>
+    <div class="note green">Otra forma: juntá las x a la derecha y no cambia nada: <span class="m">21 &lt; 3x → 7 &lt; x</span>, que es lo mismo que <span class="m">x &gt; 7</span>.</div>
+  </article>
+
+  <article class="sheet">
+    <h3>Con fracciones</h3>
+    <p>La raya de fracción funciona como un paréntesis: divide a <b>todo</b> lo de arriba.</p>
+    <span class="eq"><span class="frac"><span>x + 3</span><span>2</span></span> ≥ 4</span>
+    <ol class="steps">
+      <li>El 2 está dividiendo, pasa <b>multiplicando</b> (positivo, no cambia).<span class="eq">x + 3 ≥ 4 · 2 &nbsp;→&nbsp; x + 3 ≥ 8</span></li>
+      <li>El 3 pasa restando.<span class="eq">x ≥ 5</span></li>
+    </ol>
+    <button class="btn p go" data-go="distav">Practicar nivel avanzado</button>
+  </article>
+
+  <article class="sheet">
+    <h3>Inecuaciones con dos incógnitas</h3>
+    <p>Ahora hay <b>x</b> e <b>y</b>. La solución no son números sueltos: son <b>puntos</b> (x ; y) del plano.</p>
+    <span class="eq">2x + y &lt; 6</span>
+    <p>¿El punto (1 ; 2) es solución? Reemplazo: <span class="m">2·1 + 2 = 4</span> y <span class="m">4 &lt; 6</span> <span class="ok-t">✔ Sí</span></p>
+    <p>¿El punto (3 ; 1)? <span class="m">2·3 + 1 = 7</span> y <span class="m">7 &lt; 6</span> <span class="bad-t">✘ No</span></p>
+    <p><b>Para graficarla:</b></p>
+    <ol class="steps">
+      <li>Cambiá el signo por = y dibujá la recta <span class="m">2x + y = 6</span>. Dos puntos fáciles: x = 0 → y = 6; y = 0 → x = 3.</li>
+      <li>Recta <b>punteada</b> si es &lt; o &gt;. Recta <b>llena</b> si es ≤ o ≥.</li>
+      <li>Probá el punto (0 ; 0): <span class="m">0 &lt; 6</span> ✔. Pintá el lado donde está el (0 ; 0). Si no se cumple, pintá el otro lado.</li>
+    </ol>
+    <div class="note cyan">Jugá con los números y mirá cómo cambia la zona pintada:</div>
+    <div class="demo">
+      <input type="number" id="pa" value="2" aria-label="a"><span>x +</span>
+      <input type="number" id="pb" value="1" aria-label="b"><span>y</span>
+      <select id="pop" aria-label="Símbolo"><option value="<">&lt;</option><option value="≤">≤</option><option value=">">&gt;</option><option value="≥">≥</option></select>
+      <input type="number" id="pc" value="6" aria-label="c">
+    </div>
+    <div class="demo"><span>Punto: (</span><input type="number" id="ppx" value="1" aria-label="x del punto"><span>;</span><input type="number" id="ppy" value="2" aria-label="y del punto"><span>)</span></div>
+    <div class="graph" id="pOut"></div>
+    <p id="pTxt" style="text-align:center"></p>
+  </article>
+
+  <article class="sheet">
+    <h3>Sistemas de inecuaciones</h3>
+    <p>Son 2 inecuaciones juntas. El punto tiene que cumplir <b>las dos</b>. La solución es donde se <b>superponen</b> las zonas.</p>
+    <span class="eq"><span class="sys"><span>x + y ≤ 4</span><span>x - y &gt; 0</span></span></span>
+    <p>¿(2 ; 1)? <span class="m">2 + 1 = 3 ≤ 4</span> ✔ y <span class="m">2 - 1 = 1 &gt; 0</span> ✔ → <span class="ok-t">Sí es solución</span></p>
+    <div class="graph" id="sysDemo"></div>
+  </article>
+
+  <article class="sheet">
+    <h3>Si te dan el valor de x</h3>
+    <p>Reemplazás la x y queda una inecuación común con <b>y</b>.</p>
+    <span class="eq">Si x = 2: &nbsp; 3x + 2y &gt; 10</span>
+    <ol class="steps">
+      <li>Reemplazo: 3·2 = 6.<span class="eq">6 + 2y &gt; 10</span></li>
+      <li>El 6 pasa restando.<span class="eq">2y &gt; 4</span></li>
+      <li>El 2 pasa dividiendo.<span class="eq">y &gt; 2</span></li>
+    </ol>
+    <button class="btn p go" data-go="dosvar">Practicar dos incógnitas</button>
+  </article>
+
+  <article class="sheet" style="background:#fffbd1">
+    <h3>✅ Receta antes de la prueba</h3>
+    <ol class="steps">
+      <li>¿Hay paréntesis? <b>Distribuí</b> primero (con el signo).</li>
+      <li>Juntá las <b>x</b> de un lado y los <b>números</b> del otro.</li>
+      <li>Dividí por el número de la x. ¿Es <b>negativo</b>? <b>Dale vuelta al signo</b>.</li>
+      <li>Escribí la solución, dibujala en la recta o como intervalo.</li>
+      <li>Comprobá con un número.</li>
+    </ol>
+    <button class="btn go" data-go="mezcla">Practicar de todo un poco</button>
+  </article>
+</section>
+
+<!-- ===================== PRACTICAR ===================== -->
+<section class="panel" id="practicar">
+  <div class="stats">
+    <div class="stat" id="stPts"><b>0</b><span>puntos</span></div>
+    <div class="stat" id="stStreak"><b>0</b><span>racha 🔥</span></div>
+    <div class="stat" id="stOk"><b>0</b><span>correctas</span></div>
+    <div class="stat" id="stBest"><b>0</b><span>mejor racha</span></div>
+  </div>
+  <div class="chips" id="pTopics"></div>
+  <div class="sheet" id="pQ"></div>
+  <p style="text-align:center;color:var(--soft);font-weight:700">Cada vez que tocás "Otro ejercicio" aparecen números nuevos.
+    <button class="btn w sm" id="pReset" style="margin-left:6px">Reiniciar puntos</button></p>
+</section>
+
+<!-- ===================== EVALUATE ===================== -->
+<section class="panel" id="evaluate">
+  <div id="evHome"></div>
+  <div id="evRun"></div>
+</section>
+
+</main>
+<footer>Hecho para estudiar inecuaciones 📐 ¡Vos podés!</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const R=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const RNZ=(a,b)=>{let n;do{n=R(a,b)}while(n===0);return n};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const OPS=['<','≤','>','≥'];
+const FLIP={'<':'>','>':'<','≤':'≥','≥':'≤'};
+const S=o=>o==='<'?'&lt;':o==='>'?'&gt;':o;            // símbolo seguro para HTML
+const P=n=>n<0?`(${n})`:`${n}`;                          // número entre paréntesis si es negativo
+const M=s=>`<span class="m">${s}</span>`;
+const E=s=>`<span class="eq">${s}</span>`;
+const cmp=(l,o,r)=>o==='<'?l<r:o==='>'?l>r:o==='≤'?l<=r:l>=r;
+const LV={basico:'Básico',medio:'Medio',avanzado:'Avanzado'};
+
+// arma "3x - 5", "-x + 2y", etc. a partir de [[coef,'x'],[coef,'']]
+function expr(ts){let s='';for(const [c,v] of ts){if(c===0)continue;const a=Math.abs(c);const body=v?(a===1?v:a+v):String(a);
+  s+= s===''?(c<0?'-':'')+body:(c<0?' - ':' + ')+body;}return s||'0'}
+const lin=(a,v,b)=>expr([[a,v],[b,'']]);
+const cs=(a,v)=>expr([[a,v]]);
+const par=(k,m,v='x')=>`${k===-1?'-':k}(${lin(1,v,m)})`;
+const sub=(a,t)=>a===1?P(t):a===-1?`-${P(t)}`:`${a}·${P(t)}`;
+const frac=(n,d)=>`<span class="frac"><span>${n}</span><span>${d}</span></span>`;
+const interval=(op,v)=>({'<':`(-∞ ; ${v})`,'≤':`(-∞ ; ${v}]`,'>':`(${v} ; +∞)`,'≥':`[${v} ; +∞)`})[op];
+
+/* ---------- pasos reutilizables ---------- */
+// coef·v + b  op  c   →   coef·v  op  c - b
+function moveConst(coef,v,b,op,c){
+  if(b===0) return null;
+  return (b>0?`El <b>+${b}</b> está sumando: pasa al otro lado <b>restando</b>.`:`El <b>${b}</b> está restando: pasa al otro lado <b>sumando</b>.`)
+    + E(`${cs(coef,v)} ${S(op)} ${c} ${b>0?'-':'+'} ${Math.abs(b)}`) + E(`${cs(coef,v)} ${S(op)} ${c-b}`);
+}
+// coef·v  op  rhs   →   v  op'  rhs/coef
+function finish(coef,op,rhs,v){
+  const val=rhs/coef+0, fop=coef<0?FLIP[op]:op, steps=[];
+  if(coef===1) return {steps,op,val};
+  if(coef===-1) steps.push(`Quedó <b>-${v}</b>: multiplicamos los dos lados por -1. Es negativo, así que <b>el signo se da vuelta</b> (${S(op)} pasa a ${S(fop)}).`+E(`${v} ${S(fop)} ${val}`));
+  else steps.push(`El ${coef} está multiplicando: pasa <b>dividiendo</b>. `+(coef<0?`Como <b>${coef} es negativo, el signo se da vuelta</b> (${S(op)} pasa a ${S(fop)}).`:`Como ${coef} es positivo, el signo queda igual.`)
+    + E(`${v} ${S(fop)} ${rhs} : ${P(coef)}`) + E(`${v} ${S(fop)} ${val}`));
+  return {steps,op:fop,val};
+}
+function distStep(k,m){
+  return `<b>Propiedad distributiva</b>: el ${P(k)} multiplica a cada término del paréntesis: ${M(`${k}·x = ${cs(k,'x')}`)} y ${M(`${k}·${P(m)} = ${k*m}`)}.`;
+}
+function cFor(op,val,want){ // elige c para que "val op c" sea verdadero o falso a propósito
+  const d1=R(1,6),d0=R(0,6);
+  if(op==='<') return want?val+d1:val-d0;
+  if(op==='≤') return want?val+d0:val-d1;
+  if(op==='>') return want?val-d1:val+d0;
+  return want?val-d0:val+d1;
+}
+function mk(o){
+  const q=Object.assign({kind:'ineq',v:'x',prompt:'Resolvé la inecuación:'},o);
+  q.steps=q.steps.filter(Boolean);
+  if(q.kind==='ineq'&&!q.graph) q.graph=()=>numberLine(q.answer.op,q.answer.val,q.v);
+  return q;
+}
+
+/* ============================================================
+   GENERADORES DE EJERCICIOS (cambian cada vez)
+   ============================================================ */
+function gBasic(){
+  const a=R(2,6),x0=R(-8,8),b=RNZ(-12,12),op=pick(OPS),c=a*x0+b;
+  const f=finish(a,op,c-b,'x');
+  return mk({tk:'basico',topic:'Inecuación simple',level:'basico',big:`${lin(a,'x',b)} ${S(op)} ${c}`,
+    steps:[moveConst(a,'x',b,op,c),...f.steps],answer:{op:f.op,val:f.val},
+    hint:'Primero pasá el número que suma o resta. Después pasá el que multiplica a la x.',
+    t:x=>cmp(a*x+b,op,c)});
+}
+function gNeg(){
+  const a=-pick([1,2,3,4,5,6]),x0=R(-8,8),b=RNZ(-12,12),op=pick(OPS),c=a*x0+b;
+  const left=Math.random()<.5?lin(a,'x',b):expr([[b,''],[a,'x']]);
+  const f=finish(a,op,c-b,'x');
+  return mk({tk:'negativo',topic:'Coeficiente negativo',level:'medio',big:`${left} ${S(op)} ${c}`,
+    steps:[moveConst(a,'x',b,op,c),...f.steps],answer:{op:f.op,val:f.val},
+    hint:'La x está multiplicada por un número negativo. ¡Cuando lo pases dividiendo, dale vuelta al signo!',
+    t:x=>cmp(a*x+b,op,c)});
+}
+function gBoth(){
+  let a,c2;do{a=RNZ(-5,7);c2=RNZ(-5,7)}while(a===c2);
+  const x0=R(-6,6),d=R(-12,12),op=pick(OPS),k=a-c2,b=d-k*x0;
+  const st=[`Juntamos las x a la izquierda: el <b>${cs(c2,'x')}</b> pasa ${c2>0?'<b>restando</b>':'<b>sumando</b>'}.`
+    +E(`${lin(a,'x',b)} ${c2>0?'-':'+'} ${cs(Math.abs(c2),'x')} ${S(op)} ${d}`)+E(`${lin(k,'x',b)} ${S(op)} ${d}`),
+    moveConst(k,'x',b,op,d)];
+  const f=finish(k,op,d-b,'x');
+  return mk({tk:'ambos',topic:'x en ambos lados',level:'medio',big:`${lin(a,'x',b)} ${S(op)} ${lin(c2,'x',d)}`,
+    steps:[...st,...f.steps],answer:{op:f.op,val:f.val},
+    hint:'Juntá todas las x de un lado y todos los números del otro.',
+    t:x=>cmp(a*x+b,op,c2*x+d)});
+}
+function gDist1(){
+  const k=pick([-5,-4,-3,-2,2,3,4,5]),m=RNZ(-9,9),x0=R(-7,7),op=pick(OPS),c=k*(x0+m);
+  const f=finish(k,op,c-k*m,'x');
+  return mk({tk:'dist',topic:'Propiedad distributiva',level:'medio',big:`${par(k,m)} ${S(op)} ${c}`,
+    steps:[distStep(k,m)+E(`${lin(k,'x',k*m)} ${S(op)} ${c}`),moveConst(k,'x',k*m,op,c),...f.steps],
+    answer:{op:f.op,val:f.val},
+    hint:'Multiplicá el número de afuera por cada término del paréntesis (¡cuidado con los signos!).',
+    t:x=>cmp(k*(x+m),op,c)});
+}
+function gDist2(){
+  const k=pick([-4,-3,-2,2,3,4,5]);let n;do{n=RNZ(-4,4)}while(n===k);
+  const m=RNZ(-8,8),x0=R(-6,6),op=pick(OPS),K=k-n,q=K*x0+k*m;
+  const f=finish(K,op,q-k*m,'x');
+  return mk({tk:'dist',topic:'Distributiva con x en ambos lados',level:'avanzado',big:`${par(k,m)} ${S(op)} ${lin(n,'x',q)}`,
+    steps:[distStep(k,m)+E(`${lin(k,'x',k*m)} ${S(op)} ${lin(n,'x',q)}`),
+      `El <b>${cs(n,'x')}</b> pasa a la izquierda ${n>0?'<b>restando</b>':'<b>sumando</b>'}.`+E(`${lin(K,'x',k*m)} ${S(op)} ${q}`),
+      moveConst(K,'x',k*m,op,q),...f.steps],
+    answer:{op:f.op,val:f.val},
+    hint:'Primero distribuí. Después juntá las x a la izquierda y los números a la derecha.',
+    t:x=>cmp(k*(x+m),op,n*x+q)});
+}
+function gDist3(){
+  const k=R(2,6);let n;do{n=R(2,5)}while(n===k);
+  const m=RNZ(-7,7),p=RNZ(-7,7),x0=R(-6,6),op=pick(OPS),K=k-n,C=k*m-n*p,r=K*x0+C;
+  const f=finish(K,op,r-C,'x');
+  return mk({tk:'distav',topic:'Distributiva con un menos adelante',level:'avanzado',
+    big:`${k}(${lin(1,'x',m)}) - ${n}(${lin(1,'x',p)}) ${S(op)} ${r}`,
+    steps:[`Distribuimos el primer paréntesis: ${M(`${k}·x = ${k}x`)} y ${M(`${k}·${P(m)} = ${k*m}`)}.`,
+      `Distribuimos el segundo <b>con el menos incluido</b> (es -${n}): ${M(`-${n}·x = -${n}x`)} y ${M(`-${n}·${P(p)} = ${-n*p}`)}.`
+        +E(`${expr([[k,'x'],[k*m,''],[-n,'x'],[-n*p,'']])} ${S(op)} ${r}`),
+      `Juntamos x con x (${M(`${k}x - ${n}x = ${cs(K,'x')}`)}) y números con números (${M(`${k*m} ${-n*p<0?'-':'+'} ${Math.abs(n*p)} = ${C}`)}).`
+        +E(`${lin(K,'x',C)} ${S(op)} ${r}`),
+      moveConst(K,'x',C,op,r),...f.steps],
+    answer:{op:f.op,val:f.val},
+    hint:`El número del segundo paréntesis es -${n}: multiplicá con ese signo menos.`,
+    t:x=>cmp(k*(x+m)-n*(x+p),op,r)});
+}
+function gFrac(){
+  const k=R(2,5),a=RNZ(-9,9),b=R(-6,6),op=pick(OPS);
+  return mk({tk:'distav',topic:'Inecuación con fracción',level:'avanzado',big:`${frac(lin(1,'x',a),k)} ${S(op)} ${b}`,
+    steps:[`El ${k} está dividiendo a todo: pasa <b>multiplicando</b>. Es positivo, el signo no cambia.`
+      +E(`${lin(1,'x',a)} ${S(op)} ${b} · ${k}`)+E(`${lin(1,'x',a)} ${S(op)} ${k*b}`),
+      moveConst(1,'x',a,op,k*b)],
+    answer:{op,val:k*b-a},
+    hint:'El número de abajo pasa multiplicando al otro lado.',
+    t:x=>cmp((x+a)/k,op,b)});
+}
+function gCheck1(){
+  const a=RNZ(-5,6),b=R(-10,10),t=R(-6,6),val=a*t+b,op=pick(OPS),want=Math.random()<.5,c=cFor(op,val,want);
+  return mk({kind:'choice',tk:'basico',topic:'¿Es solución?',level:'basico',
+    prompt:`¿${M('x = '+t)} es solución de esta inecuación?`,big:`${lin(a,'x',b)} ${S(op)} ${c}`,
+    options:['Sí','No'],answer:want?0:1,
+    steps:[`Reemplazamos la x por ${t}:`+E(`${sub(a,t)}${b?` ${b<0?'-':'+'} ${Math.abs(b)}`:''} = ${val}`),
+      `¿Es cierto que ${M(`${val} ${S(op)} ${c}`)}? → ${want?'<b>Sí</b>, es verdad ✔. Entonces es solución.':'<b>No</b>, es falso ✘. Entonces no es solución.'}`],
+    hint:'Cambiá la x por el número y fijate si la desigualdad es verdadera.'});
+}
+function gInterval(){
+  const v=R(-9,9),op=pick(OPS),opts=shuffle(OPS).map(o=>interval(o,v)),incl=op==='≤'||op==='≥';
+  return mk({kind:'choice',tk:'basico',topic:'Intervalos',level:'basico',
+    prompt:`¿Qué intervalo es igual a ${M(`x ${S(op)} ${v}`)}?`,options:opts,answer:opts.indexOf(interval(op,v)),
+    steps:[(op==='<'||op==='≤')?'Es <b>menor</b>: va hacia la izquierda, hasta -∞.':'Es <b>mayor</b>: va hacia la derecha, hasta +∞.',
+      incl?`Tiene "o igual", así que el ${v} <b>sí entra</b> → corchete. El ∞ siempre con paréntesis.`:`No tiene "igual", así que el ${v} <b>no entra</b> → paréntesis.`,
+      `Resultado: ${M(interval(op,v))}`],
+    graph:()=>numberLine(op,v,'x'),
+    hint:'Corchete [ ] = el número entra. Paréntesis ( ) = no entra.'});
+}
+function g2Point(){
+  const a=RNZ(-5,5),b=RNZ(-5,5),p=R(-5,5),q=R(-5,5),op=pick(OPS),val=a*p+b*q,want=Math.random()<.5,c=cFor(op,val,want);
+  return mk({kind:'choice',tk:'dosvar',topic:'Dos incógnitas: ¿es solución?',level:'avanzado',
+    prompt:`¿El punto ${M(`(${p} ; ${q})`)} es solución?`,big:`${expr([[a,'x'],[b,'y']])} ${S(op)} ${c}`,
+    options:['Sí','No'],answer:want?0:1,
+    steps:[`Reemplazamos ${M('x = '+p)} e ${M('y = '+q)}:`+E(`${sub(a,p)} ${b<0?'-':'+'} ${sub(Math.abs(b),q)} = ${val}`),
+      `¿Es cierto que ${M(`${val} ${S(op)} ${c}`)}? → ${want?'<b>Sí</b> ✔. El punto está en la zona pintada.':'<b>No</b> ✘. El punto queda afuera de la zona pintada.'}`],
+    graph:()=>plane([{a,b,c,op}],{x:p,y:q}),
+    hint:'Reemplazá la x y la y por los números del punto, en ese orden: (x ; y).'});
+}
+function g2System(){
+  const p=R(-4,4),q=R(-4,4),make=()=>{const a=RNZ(-4,4),b=RNZ(-4,4),op=pick(OPS),val=a*p+b*q,w=Math.random()<.65;return{a,b,op,val,w,c:cFor(op,val,w)}};
+  const i1=make(),i2=make(),yes=i1.w&&i2.w;
+  const line=i=>`${expr([[i.a,'x'],[i.b,'y']])} ${S(i.op)} ${i.c}`;
+  const chk=(i,n)=>`Inecuación ${n}: ${M(`${sub(i.a,p)} ${i.b<0?'-':'+'} ${sub(Math.abs(i.b),q)} = ${i.val}`)}. ¿${M(`${i.val} ${S(i.op)} ${i.c}`)}? ${i.w?'<span class="ok-t">Sí ✔</span>':'<span class="bad-t">No ✘</span>'}`;
+  return mk({kind:'choice',tk:'dosvar',topic:'Sistema de inecuaciones',level:'avanzado',
+    prompt:`¿El punto ${M(`(${p} ; ${q})`)} es solución del sistema?`,
+    big:`<span class="sys"><span>${line(i1)}</span><span>${line(i2)}</span></span>`,
+    options:['Sí','No'],answer:yes?0:1,
+    steps:[chk(i1,1),chk(i2,2),`Tiene que cumplir <b>las dos</b>. → ${yes?'<b>Sí</b> es solución del sistema.':'<b>No</b> es solución del sistema.'}`],
+    graph:()=>plane([i1,i2],{x:p,y:q}),
+    hint:'Probá el punto en cada inecuación. Si falla en una sola, ya no es solución.'});
+}
+function g2YRange(){
+  const a=RNZ(-5,5),b=pick([-4,-3,-2,2,3,4]),p=R(-4,4),y0=R(-6,6),op=pick(OPS),c=a*p+b*y0,ap=a*p;
+  const f=finish(b,op,c-ap,'y');
+  return mk({tk:'dosvar',topic:'Dos incógnitas: buscar y',level:'avanzado',v:'y',
+    prompt:`Si ${M('x = '+p)}, ¿qué valores de ${M('y')} cumplen la inecuación?`,big:`${expr([[a,'x'],[b,'y']])} ${S(op)} ${c}`,
+    steps:[`Reemplazamos la x por ${p}: ${M(`${sub(a,p)} = ${ap}`)}`+E(`${expr([[ap,''],[b,'y']])} ${S(op)} ${c}`),
+      moveConst(b,'y',ap,op,c),...f.steps],
+    answer:{op:f.op,val:f.val},
+    hint:'Cambiá la x por el número. Te queda una inecuación común con y.',
+    t:y=>cmp(a*p+b*y,op,c)});
+}
+const ALL=[gBasic,gCheck1,gInterval,gNeg,gBoth,gDist1,gDist2,gDist3,gFrac,g2Point,g2YRange,g2System];
+
+/* ============================================================
+   DIBUJOS (SVG)
+   ============================================================ */
+function numberLine(op,v,name='x'){
+  const W=560,H=104,min=v-6,max=v+6,X=n=>30+(n-min)*(W-60)/(max-min),y=58;
+  const left=op==='<'||op==='≤',full=op==='≤'||op==='≥';
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${name} ${op} ${v} en la recta numérica" style="font-family:'Baloo 2',Nunito,sans-serif">`;
+  s+=`<line x1="10" y1="${y}" x2="${W-10}" y2="${y}" stroke="#9fb3e6" stroke-width="3"/>`;
+  for(let n=min;n<=max;n++) s+=`<line x1="${X(n)}" y1="${y-7}" x2="${X(n)}" y2="${y+7}" stroke="#9fb3e6" stroke-width="2"/><text x="${X(n)}" y="${y+28}" text-anchor="middle" font-size="15" font-weight="${n===v?800:600}" fill="${n===v?'#e5304f':'#5b6390'}">${n}</text>`;
+  const x0=X(v),xe=left?16:W-16;
+  s+=`<line x1="${x0}" y1="${y}" x2="${xe}" y2="${y}" stroke="#ff5fa2" stroke-width="8" stroke-linecap="round"/>`;
+  s+=left?`<polygon points="${xe-6},${y} ${xe+12},${y-11} ${xe+12},${y+11}" fill="#ff5fa2"/>`:`<polygon points="${xe+6},${y} ${xe-12},${y-11} ${xe-12},${y+11}" fill="#ff5fa2"/>`;
+  s+=`<circle cx="${x0}" cy="${y}" r="10" fill="${full?'#ff5fa2':'#fff'}" stroke="#1d2559" stroke-width="3.5"/>`;
+  s+=`<text x="${W/2}" y="20" text-anchor="middle" font-size="19" font-weight="800" fill="#1d2559">${name} ${S(op)} ${v}</text>`;
+  return s+'</svg>';
+}
+function plane(list,pt){
+  const N=8,SZ=320,u=SZ/(2*N),X=x=>(x+N)*u,Y=y=>(N-y)*u,st=.5,cols=['#6c4cff','#ff9a3c'];
+  let s=`<svg class="pl" viewBox="0 0 ${SZ} ${SZ}" role="img" aria-label="Gráfico en el plano" style="font-family:'Baloo 2',Nunito,sans-serif">`;
+  for(let x=-N;x<N;x+=st)for(let y=-N;y<N;y+=st){const cx=x+st/2,cy=y+st/2;
+    if(list.every(i=>cmp(i.a*cx+i.b*cy,i.op,i.c))) s+=`<rect x="${X(x)}" y="${Y(y+st)}" width="${u*st+.4}" height="${u*st+.4}" fill="rgba(43,208,255,.32)"/>`;}
+  for(let i=-N;i<=N;i++) s+=`<line x1="${X(i)}" y1="0" x2="${X(i)}" y2="${SZ}" stroke="#e3ecf8" stroke-width="1"/><line x1="0" y1="${Y(i)}" x2="${SZ}" y2="${Y(i)}" stroke="#e3ecf8" stroke-width="1"/>`;
+  s+=`<line x1="${X(0)}" y1="0" x2="${X(0)}" y2="${SZ}" stroke="#1d2559" stroke-width="2"/><line x1="0" y1="${Y(0)}" x2="${SZ}" y2="${Y(0)}" stroke="#1d2559" stroke-width="2"/>`;
+  for(let i=-N+2;i<N;i+=2) if(i) s+=`<text x="${X(i)}" y="${Y(0)+14}" font-size="10" text-anchor="middle" fill="#5b6390">${i}</text><text x="${X(0)-5}" y="${Y(i)+4}" font-size="10" text-anchor="end" fill="#5b6390">${i}</text>`;
+  s+=`<text x="${SZ-8}" y="${Y(0)-6}" font-size="14" font-weight="800" text-anchor="end">x</text><text x="${X(0)+8}" y="14" font-size="14" font-weight="800">y</text>`;
+  list.forEach((i,k)=>{
+    if(i.a===0&&i.b===0) return;
+    let x1,y1,x2,y2;
+    if(i.b!==0){x1=-N;x2=N;y1=(i.c-i.a*x1)/i.b;y2=(i.c-i.a*x2)/i.b}else{x1=x2=i.c/i.a;y1=-N;y2=N}
+    const strict=i.op==='<'||i.op==='>';
+    s+=`<line x1="${X(x1)}" y1="${Y(y1)}" x2="${X(x2)}" y2="${Y(y2)}" stroke="${cols[k%2]}" stroke-width="3.5" ${strict?'stroke-dasharray="9 6"':''}/>`;
+  });
+  if(pt){s+=`<circle cx="${X(pt.x)}" cy="${Y(pt.y)}" r="7" fill="#ff5fa2" stroke="#1d2559" stroke-width="2.5"/>
+    <text x="${X(pt.x)+10}" y="${Y(pt.y)-9}" font-size="14" font-weight="800" fill="#1d2559">(${pt.x} ; ${pt.y})</text>`}
+  return s+'</svg>';
+}
+
+/* ============================================================
+   PREGUNTAS EN PANTALLA
+   ============================================================ */
+function qBody(q){
+  let h=`<p class="q-prompt">${q.prompt}</p>`;
+  if(q.big) h+=`<div class="big">${q.big}</div>`;
+  if(q.kind==='ineq'){
+    h+=`<div class="ans"><span class="ans-var">${q.v}</span>
+      <select class="ans-op" aria-label="Símbolo"><option value="">?</option>${OPS.map(o=>`<option value="${o}">${S(o)}</option>`).join('')}</select>
+      <button type="button" class="pm" aria-label="Cambiar el signo del número">±</button>
+      <input class="ans-val" type="text" inputmode="decimal" autocomplete="off" placeholder="número" aria-label="Número"></div>`;
+  } else {
+    h+=`<div class="opts">${q.options.map((o,i)=>`<button type="button" class="opt" data-i="${i}">${o}</button>`).join('')}</div>`;
+  }
+  return h;
+}
+function wire(el,onChange){
+  $$('.opt',el).forEach(b=>b.onclick=()=>{if(el.dataset.locked)return;$$('.opt',el).forEach(x=>x.classList.remove('sel'));b.classList.add('sel');onChange&&onChange()});
+  const pm=$('.pm',el);
+  if(pm) pm.onclick=()=>{if(el.dataset.locked)return;const i=$('.ans-val',el);i.value=i.value.startsWith('-')?i.value.slice(1):'-'+i.value;i.focus();onChange&&onChange()};
+  $$('select,input',el).forEach(x=>x.addEventListener('input',()=>onChange&&onChange()));
+}
+function readAns(q,el){
+  if(q.kind==='ineq'){
+    const op=$('.ans-op',el).value,raw=$('.ans-val',el).value.trim().replace(',','.');
+    if(!op||raw===''||raw==='-'||isNaN(Number(raw))) return null;
+    return {ok:op===q.answer.op&&Math.abs(Number(raw)-q.answer.val)<1e-9,given:`${q.v} ${S(op)} ${raw}`};
+  }
+  const s=$('.opt.sel',el); if(!s) return null;
+  const i=+s.dataset.i; return {ok:i===q.answer,given:q.options[i]};
+}
+const answerText=q=>q.kind==='ineq'?`${q.v} ${S(q.answer.op)} ${q.answer.val}`:q.options[q.answer];
+function lockQ(q,el){
+  el.dataset.locked='1';
+  $$('select,input,.pm',el).forEach(x=>x.disabled=true);
+  if(q.kind==='choice') $$('.opt',el).forEach(b=>{const i=+b.dataset.i;if(i===q.answer)b.classList.add('right');else if(b.classList.contains('sel'))b.classList.add('wrong')});
+}
+const solution=q=>`<ol class="steps">${q.steps.map(s=>`<li>${s}</li>`).join('')}</ol>${q.graph?`<div class="graph">${q.graph()}</div>`:''}`;
+
+/* ---------- almacenamiento ---------- */
+function load(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('on'),2200)}
+function confetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const c=['#fff35c','#ff5fa2','#2bd0ff','#3ee08a','#6c4cff','#ff9a3c'];
+  for(let i=0;i<90;i++){const d=document.createElement('div');d.className='cf';d.style.left=Math.random()*100+'vw';d.style.background=pick(c);
+    d.style.animationDuration=(1.8+Math.random()*1.6)+'s';d.style.animationDelay=Math.random()*.4+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),4000)}
+}
+
+/* ============================================================
+   PRACTICAR
+   ============================================================ */
+const TOPICS={
+  basico:{name:'🌱 Básico',gens:[gBasic,gBasic,gCheck1,gInterval]},
+  negativo:{name:'🔄 Signo negativo',gens:[gNeg]},
+  ambos:{name:'⚖️ x en ambos lados',gens:[gBoth]},
+  dist:{name:'🎯 Distributiva',gens:[gDist1,gDist1,gDist2]},
+  distav:{name:'🚀 Distributiva avanzada',gens:[gDist3,gDist3,gFrac]},
+  dosvar:{name:'📈 Dos incógnitas',gens:[g2Point,g2YRange,g2System]},
+  mezcla:{name:'🎲 Mezcla de todo',gens:ALL}
+};
+const CHEERS=['¡Excelente! 🎉','¡Bien ahí! 🙌','¡Perfecto! ⭐','¡Genia total! 💜','¡Así se hace! 🚀','¡Impecable! ✨'];
+let curTopic='basico',curQ=null,locked=false;
+let stats=load('ineq_stats',{pts:0,streak:0,best:0,ok:0,total:0});
+
+function updateStats(popId){
+  $('#stPts b').textContent=stats.pts;$('#stStreak b').textContent=stats.streak;
+  $('#stOk b').textContent=`${stats.ok}/${stats.total}`;$('#stBest b').textContent=stats.best;
+  if(popId){const e=$(popId);e.classList.remove('pop');void e.offsetWidth;e.classList.add('pop')}
+}
+function renderTopics(){
+  $('#pTopics').innerHTML=Object.entries(TOPICS).map(([k,t])=>`<button class="chip ${k===curTopic?'on':''}" data-k="${k}">${t.name}</button>`).join('');
+  $$('#pTopics .chip').forEach(b=>b.onclick=()=>{curTopic=b.dataset.k;renderTopics();newQ()});
+}
+function newQ(){
+  curQ=pick(TOPICS[curTopic].gens)();locked=false;
+  const box=$('#pQ');delete box.dataset.locked;
+  box.innerHTML=`<div class="q-meta"><span class="lvl lvl-${curQ.level}">${LV[curQ.level]}</span><span>${curQ.topic}</span></div>
+    ${qBody(curQ)}
+    <div class="row"><button class="btn" id="pCheck">Comprobar</button><button class="btn w" id="pHint">💡 Pista</button><button class="btn g" id="pNext">Otro ejercicio</button></div>
+    <div class="hintbox" id="pHintBox"></div><div id="pFb"></div>`;
+  wire(box);
+  $('#pCheck').onclick=pCheck;$('#pNext').onclick=newQ;
+  $('#pHint').onclick=()=>{$('#pHintBox').innerHTML=`<div class="note">${curQ.hint}</div>`};
+}
+function pCheck(){
+  if(locked){newQ();return}
+  const box=$('#pQ'),r=readAns(curQ,box);
+  if(!r){toast(curQ.kind==='ineq'?'Elegí el símbolo y escribí el número':'Elegí una opción');box.classList.remove('shake');void box.offsetWidth;box.classList.add('shake');return}
+  locked=true;lockQ(curQ,box);stats.total++;
+  if(r.ok){stats.ok++;stats.streak++;stats.best=Math.max(stats.best,stats.streak);stats.pts+=10+Math.min(stats.streak-1,5)*2;
+    if(stats.streak>0&&stats.streak%5===0) confetti();}
+  else stats.streak=0;
+  save('ineq_stats',stats);updateStats(r.ok?'#stPts':'#stStreak');
+  $('#pCheck').textContent='Siguiente';
+  $('#pFb').innerHTML=r.ok
+    ?`<div class="fb ok"><h4>${pick(CHEERS)}</h4><p>Tu respuesta: ${M(r.given)}</p><details><summary>Ver cómo se resuelve</summary>${solution(curQ)}</details></div>`
+    :`<div class="fb bad"><h4>Casi 💪 Mirá cómo se resuelve</h4><p>Pusiste ${M(r.given)}. La respuesta es ${M(answerText(curQ))}.</p>${solution(curQ)}</div>`;
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&$('#practicar').classList.contains('on')&&$('#pQ').contains(document.activeElement)&&document.activeElement.tagName!=='BUTTON'){e.preventDefault();pCheck()}
+});
+
+/* ============================================================
+   EVALUATE
+   ============================================================ */
+const EVAL={
+  basica:{name:'Prueba básica',emoji:'🌱',desc:'8 ejercicios: inecuaciones simples, intervalos, signo negativo y distributiva.',
+    gens:[gBasic,gBasic,gCheck1,gInterval,gNeg,gNeg,gDist1,gDist1]},
+  media:{name:'Prueba media',emoji:'🔥',desc:'10 ejercicios: suma x en ambos lados, más distributiva y un punto en el plano.',
+    gens:[gBasic,gInterval,gNeg,gNeg,gBoth,gBoth,gDist1,gDist1,gDist2,g2Point]},
+  completa:{name:'Prueba completa',emoji:'🚀',desc:'12 ejercicios de todos los temas, como una prueba de verdad.',
+    gens:[gNeg,gBoth,gInterval,gDist1,gDist2,gDist2,gDist3,gDist3,gFrac,g2Point,g2YRange,g2System]}
+};
+let ev=null;
+const TKN={basico:'Básico',negativo:'Signo negativo',ambos:'x en ambos lados',dist:'Distributiva',distav:'Distributiva avanzada',dosvar:'Dos incógnitas'};
+
+function renderEvHome(){
+  const hist=load('ineq_hist',[]);
+  $('#evRun').innerHTML='';
+  $('#evHome').innerHTML=`
+    <div class="sheet" style="background:#fffbd1"><h3>📝 Tomate una prueba</h3>
+    <p>Respondé todo y tocá <b>Entregar</b>. Te corrijo al final, con la nota y cómo se resolvía cada ejercicio. Los números cambian cada vez.</p></div>
+    <div class="ev-cards">${Object.entries(EVAL).map(([k,e])=>`<div class="ev-card"><h3>${e.emoji} ${e.name}</h3><p>${e.desc}</p><button class="btn" data-ev="${k}">Empezar</button></div>`).join('')}</div>
+    ${hist.length?`<div class="sheet" style="margin-top:26px"><h3>Tus últimas notas</h3><ul class="hist">${hist.slice(0,6).map(h=>`<li><span>${h.date} · ${h.name}</span><b>${h.ok}/${h.n} → nota ${h.nota}</b></li>`).join('')}</ul></div>`:''}`;
+  $$('[data-ev]').forEach(b=>b.onclick=()=>evStart(b.dataset.ev));
+}
+function fmtTime(ms){const s=Math.floor(ms/1000);return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`}
+function evStart(key){
+  const cfg=EVAL[key];
+  ev={key,cfg,qs:cfg.gens.map(g=>g()),start:Date.now(),done:false};
+  $('#evHome').innerHTML='';
+  $('#evRun').innerHTML=`<div id="evResult"></div>
+    <div class="ev-bar" id="evBar"><span>${cfg.emoji} ${cfg.name}</span><div class="prog"><i id="evProg"></i></div><span id="evCount">0/${ev.qs.length}</span><span>⏱ <span id="evTimer">0:00</span></span>
+      <button class="btn p sm" id="evSubmit">Entregar</button></div>
+    ${ev.qs.map((q,i)=>`<div class="sheet evq" id="evq${i}"><div class="evq-n">${i+1}</div><div class="evq-body">
+      <div class="q-meta"><span class="lvl lvl-${q.level}">${LV[q.level]}</span><span>${q.topic}</span></div>${qBody(q)}<div class="evq-fb"></div></div></div>`).join('')}
+    <div class="row" style="justify-content:center"><button class="btn p" id="evSubmit2">Entregar evaluación</button></div>`;
+  ev.qs.forEach((q,i)=>wire($('#evq'+i),evProgress));
+  $('#evSubmit').onclick=$('#evSubmit2').onclick=evSubmit;
+  clearInterval(ev.timer);ev.timer=setInterval(()=>{$('#evTimer').textContent=fmtTime(Date.now()-ev.start)},1000);
+  window.scrollTo({top:$('#evaluate').offsetTop-20});
+}
+function evProgress(){
+  const n=ev.qs.filter((q,i)=>readAns(q,$('#evq'+i))).length;
+  $('#evProg').style.width=(100*n/ev.qs.length)+'%';$('#evCount').textContent=`${n}/${ev.qs.length}`;
+}
+function evSubmit(){
+  if(!ev||ev.done) return;
+  const res=ev.qs.map((q,i)=>readAns(q,$('#evq'+i)));
+  const empty=res.filter(r=>!r).length;
+  if(empty&&!confirm(`Te ${empty===1?'falta 1 ejercicio':`faltan ${empty} ejercicios`} sin responder. ¿Entregar igual?`)) return;
+  ev.done=true;clearInterval(ev.timer);
+  const time=fmtTime(Date.now()-ev.start),by={};let ok=0;
+  ev.qs.forEach((q,i)=>{
+    const el=$('#evq'+i),r=res[i],good=!!(r&&r.ok);if(good)ok++;
+    by[q.tk]=by[q.tk]||{ok:0,n:0};by[q.tk].n++;if(good)by[q.tk].ok++;
+    lockQ(q,el);el.classList.add(good?'right':'wrong');
+    $('.evq-fb',el).innerHTML=good
+      ?`<div class="fb ok"><h4>✔ Correcta</h4><details><summary>Ver resolución</summary>${solution(q)}</details></div>`
+      :`<div class="fb bad"><h4>✘ ${r?`Pusiste ${M(r.given)}`:'Sin responder'}</h4><p>La respuesta es ${M(answerText(q))}.</p><details open><summary>Ver resolución</summary>${solution(q)}</details></div>`;
+  });
+  const n=ev.qs.length,nota=Math.max(1,Math.round(10*ok/n));
+  const msg=nota>=9?'¡Brillante! Llegás muy bien a la prueba. 🌟':nota>=7?'¡Muy bien! Repasá los errores y listo. 💪':nota>=6?'Aprobado. Practicá un poco más los temas en rosa. 📚':'Todavía falta práctica. Mirá los pasos de cada error y volvé a intentarlo. ¡Vos podés! 💜';
+  const weak=Object.entries(by).filter(([,v])=>v.ok<v.n).map(([k])=>k);
+  $('#evBar').style.display='none';$('#evSubmit2').parentElement.style.display='none';
+  $('#evResult').innerHTML=`<div class="sheet result">
+    <div class="grade">${nota}<small>nota</small></div>
+    <h3>${ok} de ${n} correctas</h3><p>Tiempo: ${time}</p><p style="font-size:1.15rem;font-weight:800">${msg}</p>
+    <div class="breakdown">${Object.entries(by).map(([k,v])=>`<span class="bd ${v.ok<v.n?'mal':''}">${TKN[k]}: ${v.ok}/${v.n}</span>`).join('')}</div>
+    ${weak.length?`<p>Para mejorar, practicá:</p><div class="row" style="justify-content:center">${weak.map(k=>`<button class="btn y sm go" data-go="${k}">${TKN[k]}</button>`).join('')}</div>`:''}
+    <div class="row" style="justify-content:center;margin-top:16px"><button class="btn" id="evAgain">Otra prueba igual</button><button class="btn w" id="evHomeBtn">Elegir otra prueba</button></div></div>`;
+  $$('#evResult .go').forEach(b=>b.onclick=()=>goPractice(b.dataset.go));
+  $('#evAgain').onclick=()=>evStart(ev.key);$('#evHomeBtn').onclick=renderEvHome;
+  const hist=load('ineq_hist',[]);hist.unshift({date:new Date().toLocaleDateString('es-AR'),name:ev.cfg.name,ok,n,nota});save('ineq_hist',hist.slice(0,20));
+  if(nota>=8) confetti();
+  window.scrollTo({top:$('#evaluate').offsetTop-20,behavior:'smooth'});
+}
+
+/* ============================================================
+   NAVEGACIÓN Y DEMOS
+   ============================================================ */
+function show(tab){
+  $$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.tab===tab));
+  $$('.panel').forEach(p=>p.classList.toggle('on',p.id===tab));
+}
+function goPractice(k){curTopic=k;renderTopics();newQ();show('practicar');window.scrollTo({top:0,behavior:'smooth'})}
+
+function demoLine(){
+  const op=$('#dlOp').value,v=+$('#dlV').value,full=op==='≤'||op==='≥';
+  $('#dlVal').textContent=v;$('#dlOut').innerHTML=numberLine(op,v);
+  $('#dlTxt').innerHTML=`Intervalo: ${M(interval(op,v))}. El ${v} ${full?'<b>sí</b> entra: círculo lleno.':'<b>no</b> entra: círculo vacío.'}`;
+}
+function demoPlane(){
+  const g=id=>{const n=parseFloat($(id).value);return isNaN(n)?0:n};
+  const a=g('#pa'),b=g('#pb'),c=g('#pc'),op=$('#pop').value,px=g('#ppx'),py=g('#ppy');
+  $('#pOut').innerHTML=plane([{a,b,c,op}],{x:px,y:py});
+  if(a===0&&b===0){$('#pTxt').innerHTML='Poné algún número distinto de 0 delante de x o de y.';return}
+  const val=a*px+b*py;
+  $('#pTxt').innerHTML=`Probamos (${px} ; ${py}): ${M(`${sub(a,px)} ${b<0?'-':'+'} ${sub(Math.abs(b),py)} = ${val}`)}. ¿${M(`${val} ${S(op)} ${c}`)}? `
+    +(cmp(val,op,c)?'<span class="ok-t">Sí ✔, está en la zona pintada.</span>':'<span class="bad-t">No ✘, queda afuera.</span>');
+}
+
+function init(){
+  $$('.tab').forEach(b=>b.onclick=()=>show(b.dataset.tab));
+  $$('.go').forEach(b=>b.onclick=()=>goPractice(b.dataset.go));
+  ['#dlOp','#dlV'].forEach(id=>$(id).addEventListener('input',demoLine));
+  ['#pa','#pb','#pc','#pop','#ppx','#ppy'].forEach(id=>$(id).addEventListener('input',demoPlane));
+  demoLine();demoPlane();
+  $('#sysDemo').innerHTML=plane([{a:1,b:1,c:4,op:'≤'},{a:1,b:-1,c:0,op:'>'}],{x:2,y:1});
+  $('#pReset').onclick=()=>{if(confirm('¿Borrar puntos y rachas?')){stats={pts:0,streak:0,best:0,ok:0,total:0};save('ineq_stats',stats);updateStats()}};
+  renderTopics();newQ();updateStats();renderEvHome();
+}
+if(typeof document!=='undefined') document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
